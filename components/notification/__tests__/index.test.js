@@ -1,8 +1,14 @@
 import notification from '..';
 
-jest.useFakeTimers();
-
 describe('notification', () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   afterEach(() => {
     notification.destroy();
   });
@@ -51,7 +57,7 @@ describe('notification', () => {
   });
 
   it('should be able to open with icon', () => {
-    const openNotificationWithIcon = (type) => {
+    const openNotificationWithIcon = type => {
       const iconPrefix = '.ant-notification-notice-icon';
       notification[type]({
         message: 'Notification Title',
@@ -60,8 +66,16 @@ describe('notification', () => {
       });
       expect(document.querySelectorAll(`${iconPrefix}-${type}`).length).toBe(1);
     };
-    ['success', 'info', 'warning', 'error'].forEach((type) => {
+    ['success', 'info', 'warning', 'error'].forEach(type => {
       openNotificationWithIcon(type);
     });
+  });
+
+  it('trigger onClick', () => {
+    notification.open({
+      message: 'Notification Title',
+      duration: 0,
+    });
+    expect(document.querySelectorAll('.ant-notification').length).toBe(1);
   });
 });
